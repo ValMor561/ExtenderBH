@@ -1,0 +1,74 @@
+{
+    "queries": [
+        {
+            "name": "Find all Hass Session relationships",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH p=()-[r:HasSession]->() RETURN p"
+                }
+            ]
+        },
+        {
+            "name": "Find all user with ClearTextPassword",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (u:User) WHERE u.ClearTextPassword IS NOT NULL return u;"
+                }
+            ]
+        },
+		{
+            "name": "List all localadmin",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (u:User) WHERE u.LocalAdmin = True return u;"
+                }
+            ]
+        },
+		{
+            "name": "Find all user with PasswordMustBeChange",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (u:User) WHERE u.PasswordMustBeChange = True return u;"
+                }
+            ]
+        },
+        {
+            "name": "Find all user with SharedPassword",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH p=(u1:User)-[r:SharePasswordWith]-(u2:User) return p"
+                }
+            ]
+        },
+		{
+            "name": "All object which NTLMv2 we have",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (n) WHERE n.NTLMv2_Count>0 return n;"
+                }
+            ]
+        },
+        {
+            "name": "Find brutable service",
+			"category": "Extended_bh",
+			"queryList": [
+				{
+                    "final": true,
+                    "query": "MATCH (n) WHERE n.BrutableService  return n;"
+                }				
+			]
+        }
+    ]
+}
