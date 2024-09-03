@@ -2,6 +2,7 @@ import re
 import os
 import json
 import time
+import pandas as pd
 from modules.neo4jconn import neo4j_db
 
 def session(args):
@@ -16,8 +17,8 @@ def session(args):
 
     session_input = args.session_input
     trust_input = args.trust_metter
-    if "json" not in trust_input:
-        print("[!] Trust Metter must be json")
+    if not ("json" in trust_input or "Assets" in trust_input):
+        print("[!] Trust Metter must be json or *Assets.xlsx")
         return
     
     try:
@@ -39,9 +40,13 @@ def session(args):
     if len(ses_uz) == 0:
         print("[!] Make sure that your session file has format <ip> : [UZ]")
     
+    
     try:
-        with open(trust_input, mode="r") as f:
-            data = json.load(f) 
+        if "json" in trust_input:
+            with open(trust_input, mode="r") as f:
+                data = json.load(f)
+        elif "Assets" in trust_input:
+            data = pd.read_excel(trust_input)
     except FileNotFoundError:
         print("[!] Check the trust metter filename")
         return
@@ -57,24 +62,47 @@ def session(args):
 
     not_error = True
     print(f'{"-"*20}Start{"-"*20}\n')
-    count = 0
-    for uz, ip in ses_uz.items():
-        for muz in data['assets'].values():
-            if ip in muz['ip_address']:
-                muz_n = muz['fqdn']
-                
-                query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (n)-[r:HasSession]->(m);\n'
-                
-                if args.neo4j_auth and not_error:
-                    not_error = NJ.execute_query(query)
-                
-                with open(output_filename, "a+") as f:
-                    f.write(query)
-                print(f'[+] {uz} -> {muz}')
-                count += 1
-                continue
+    if "json" in trust_input:
+        count = 0
+        for uz, ip in ses_uz.items():
+            for muz in data['assets'].values():
+                if ip in muz['ip_address']:
+                    muz_n = muz['fqdn']
+                    
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (n)-[r:HasSession]->(m);\n'
+                    
+                    if args.neo4j_auth and not_error:
+                        not_error = NJ.execute_query(query)
+                    
+                    with open(output_filename, "a+") as f:
+                        f.write(query)
+                    print(f'[+] {uz} -> {muz_n}')
+                    count += 1
+                    continue
 
-    print(f"\nDone: {count}")
+        print(f"\nDone: {count}")
+    elif "Assets" in trust_input:
+        count = 0
+        for uz, ip in ses_uz.items():
+            for index, row in data.iterrows():
+                if index == 94:
+                    pass
+                ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
+                if ip in ip_addr:
+                    muz_n = row['FQDN']
+
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (n)-[r:HasSession]->(m);\n'
+                    
+                    if args.neo4j_auth and not_error:
+                        not_error = NJ.execute_query(query)
+                    
+                    with open(output_filename, "a+") as f:
+                        f.write(query)
+                    print(f'[+] {uz} -> {muz_n}')
+                    count += 1
+                    continue
+        print(f"\nDone: {count}")
+
 
     if args.neo4j_auth:
         if not_error:
