@@ -5,9 +5,10 @@ from modules.spray import spray
 from modules.ntlm import ntlm
 from modules.brute import brute
 from modules.localadmin import localadmin
+from modules.pre2k import pre2k
 
 def arg_parse():
-    parser = argparse.ArgumentParser(description='Application for generating HasSession edges')
+    parser = argparse.ArgumentParser(description='Application for upload data into BloodHound')
     subparser = parser.add_subparsers(title='subcommands', help='additional help')
     
     #__Start session part__ 
@@ -86,6 +87,21 @@ def arg_parse():
     neo4j_goup.add_argument('-nd', '--neo4j_database', help='Database for neo4j. By default - neo4j', default="neo4j")
 
     localadmin_parser.set_defaults(func=localadmin)
+    #__End brute part__
+
+    #__Start localadmin part__
+    pre2k_parser = subparser.add_parser('pre2k', help="Parse pre2k output")
+    pre2k_parser.add_argument('-i','--input', help="pre2k output filename", required=True)
+    pre2k_parser.add_argument('-o','--output', help="Output filename")
+   
+    neo4j_goup = pre2k_parser.add_argument_group('neo4j')
+    neo4j_goup.add_argument('-na', '--neo4j_auth', help="Auto use neo4j request for result", action='store_true' )
+    neo4j_goup.add_argument('-nl', '--neo4j_login', help="Login for neo4j")
+    neo4j_goup.add_argument('-np', '--neo4j_password', help="Password for neo4j")
+    neo4j_goup.add_argument('-nu', '--neo4j_url', help='URL for neo4j. By default - neo4j://localhost:7687', default="neo4j://localhost:7687")
+    neo4j_goup.add_argument('-nd', '--neo4j_database', help='Database for neo4j. By default - neo4j', default="neo4j")
+
+    pre2k_parser.set_defaults(func=pre2k)
     #__End brute part__
 
     args = parser.parse_args(sys.argv[1:])

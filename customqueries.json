@@ -11,12 +11,32 @@
             ]
         },
         {
+            "name": "Find all owned",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (u) WHERE u.owned = True return u;"
+                }
+            ]
+        },
+        {
             "name": "Find all user with ClearTextPassword",
             "category" : "Extended_bh",
             "queryList": [
                 {
                     "final": true,
                     "query": "MATCH (u:User) WHERE u.ClearTextPassword IS NOT NULL return u;"
+                }
+            ]
+        },
+        {
+            "name": "Find all computers with ClearTextPassword",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH (c:Computer) WHERE c.ClearTextPassword IS NOT NULL return c;"
                 }
             ]
         },

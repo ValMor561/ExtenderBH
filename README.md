@@ -467,6 +467,61 @@ MATCH (n) WHERE n.BrutableService IS NOT NULL UNWIND n.BrutableService 
 ```cypher
 MATCH (n) WHERE n.BrutableService  return n;
 ```
+# Pre2k
+## Команда для получения файла с результатами
+```
+pre2k auth -u <user> -p <passw> -dc-ip <ip> -d <domain> -n -outputfile <filename>
+```
+## Параметры
+![](img/pre2k_param.png)
+### input(i)
+Имя файла с результатом работы pre2k
+Пример файла:
+```
+Invalid credentials: essos.local\WIN-GZXRUEUMLOE$:win-gzxrueumlo
+Invalid credentials: essos.local\DESKTOP-P30HULT$:desktop-p30hul
+Invalid credentials: essos.local\WIN-GY4TPRPAHJ5$:win-gy4tprpahj
+Invalid credentials: essos.local\WIN-NFO1MYAE2XL$:win-nfo1myae2x
+Invalid credentials: essos.local\WIN-VHIFESOFDMQ$:win-vhifesofdm
+['[green bold]VALID CREDENTIALS[/]', ' essos.local\\test$', 'test']
+Invalid credentials: essos.local\Administrator$:administrator
+```
+### output(o)
+Имя файла в который записывается результат
+По умолчанию `extended_pre2k_bh_%d_%m_%H_%M.txt`
+Пример:
+```cypher
+MATCH (c:Computer) WHERE c.name =~ "(?i)test.essos.local.*" SET c.ClearTextPassword = "test" SET c.owned = True;
+MATCH (c:Computer) WHERE c.name =~ "(?i)test5.essos.local.*" SET c.ClearTextPassword = "" SET c.owned = True;
+```
+## Регулярные выражения
+```regex
+VALID CREDENTIALS[^,]*, ' ([^\\]*)\\\\([^']*)', '([^']*)
+```
+![](img/pre2k_re.png)
+## Формирование запроса
+```cypher
+MATCH (c:Computer) WHERE c.name =~ "(?i)<user>.<domain>.*" 
+SET c.ClearTextPassword = "<password>" SET c.owned = True;
+```
+## Customquery
+### Все компьютеры с пустым паролем
+```json
+{
+	"name": "Find all computers with ClearTextPassword",
+	"category" : "Extended_bh",
+	"queryList": [
+		{
+			"final": true,
+			"query": "MATCH (c:Computer) WHERE c.ClearTextPassword IS NOT NULL return c;"
+		}
+	]
+}
+```
+Запрос:
+```cypher
+MATCH (c:Computer) WHERE c.ClearTextPassword IS NOT NULL return c;
+```
 # Neo4j
 ## Параметры
 ![](img/neo4j_param.PNG)
