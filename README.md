@@ -522,6 +522,56 @@ SET c.ClearTextPassword = "<password>" SET c.owned = True;
 ```cypher
 MATCH (c:Computer) WHERE c.ClearTextPassword IS NOT NULL return c;
 ```
+# Localadmin
+## Параметры
+![](img/localadmin_param.png)
+### input(i)
+Имя файла с результатом работы localadmin.sh
+Пример файла:
+```
+[+] 10.2.1.71
+DEVEL\Domain Admins
+DEVEL\Enterprise Admins
+DEVEL\devel_da
+DEVEL\adaxes_srv
+
+[+] nibiru04.devel.ifx
+DEVEL\Domain Admins
+DEVEL\Enterprise Admins
+DEVEL\devel_da
+DEVEL\adaxes_srv
+```
+### trust_metter(tm)
+Имя `json` или `csv` файла сгенерированного Trust Metter. 
+Не обязательный параметр, используется для преобразования `ip` в `fqdn`
+### output (o)
+Имя файла в который записывается результат
+По умолчанию `extended_localadmin_bh_%d_%m_%H_%M.txt`
+Пример:
+```
+MATCH (u) WHERE u.name =~ "(?i)Domain Admins@DEVEL.*" MATCH (c: Computer) WHERE c.name =~ "(?i)nibiru04.devel.ifx.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;
+MATCH (u) WHERE u.name =~ "(?i)Enterprise Admins@DEVEL.*" MATCH (c: Computer) WHERE c.name =~ "(?i)nibiru04.devel.ifx.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;
+MATCH (u) WHERE u.name =~ "(?i)devel_da@DEVEL.*" MATCH (c: Computer) WHERE c.name =~ "(?i)nibiru04.devel.ifx.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;
+M
+```
+## Формирование запроса
+```cypher
+MATCH (u) WHERE u.name =~ "(?i){username}@{domain}.*" MATCH (c: Computer) WHERE c.name =~ "(?i){target}.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;
+```
+## Customquery
+### Все сущности которые имеют связь AdminTo
+```json
+{
+	"name": "List all users which admin to computer",
+	"category" : "Extended_bh",
+	"queryList": [
+		{
+			"final": true,
+			"query": "MATCH p=(n)-[b:AdminTo]->(c:Computer) RETURN p"
+		}
+	]
+}
+```
 # Neo4j
 ## Параметры
 ![](img/neo4j_param.PNG)
