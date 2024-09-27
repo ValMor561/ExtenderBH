@@ -523,6 +523,19 @@ SET c.ClearTextPassword = "<password>" SET c.owned = True;
 MATCH (c:Computer) WHERE c.ClearTextPassword IS NOT NULL return c;
 ```
 # Localadmin
+## Формирования файла на вход
+Для формирования файла, подаваемого на вход нужно запустить скрипт `localadmin.sh`, который находится в папке `scripts`
+```bash
+#!/bin/bash
+cat $2 | while read line
+do
+    echo "[+]" $line;
+    net rpc group members Administrators -U $1 -I $line;
+    echo ;
+done
+```
+Здесь `$1` - параметр с учетными данными в виде `user%pass` 
+Здесь `$2` - имя файла с именами или ip адресами целей
 ## Параметры
 ![](img/localadmin_param.png)
 ### input(i)
