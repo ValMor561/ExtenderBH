@@ -50,7 +50,7 @@ def ntlm(args):
         if args.neo4j_auth and not_error:
             not_error = NJ.execute_query(query)
             
-        with open(output_filename, "a+") as f:
+        with open(output_filename, "a") as f:
             f.write(query)
         count += 1
     

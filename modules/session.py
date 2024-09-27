@@ -74,7 +74,7 @@ def session(args):
                     if args.neo4j_auth and not_error:
                         not_error = NJ.execute_query(query)
                     
-                    with open(output_filename, "a+") as f:
+                    with open(output_filename, "a") as f:
                         f.write(query)
                     print(f'[+] {uz} -> {muz_n}')
                     count += 1
@@ -85,8 +85,6 @@ def session(args):
         count = 0
         for uz, ip in ses_uz.items():
             for index, row in data.iterrows():
-                if index == 94:
-                    pass
                 ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
                 if ip in ip_addr:
                     muz_n = row['FQDN']
@@ -96,7 +94,7 @@ def session(args):
                     if args.neo4j_auth and not_error:
                         not_error = NJ.execute_query(query)
                     
-                    with open(output_filename, "a+") as f:
+                    with open(output_filename, "a") as f:
                         f.write(query)
                     print(f'[+] {uz} -> {muz_n}')
                     count += 1

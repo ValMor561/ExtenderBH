@@ -59,7 +59,7 @@ def spray(args):
                     if args.neo4j_auth and not_error:
                         not_error = NJ.execute_query(query)
                     
-                    with open(output_filename, "a+") as f:
+                    with open(output_filename, "a") as f:
                         f.write(query)
             else:
                 print(f"[+] Valid user: {user}:{passw}")
@@ -109,7 +109,7 @@ def spray(args):
         if args.neo4j_auth and not_error:
             not_error = NJ.execute_query(query)
             
-        with open(output_filename, "a+") as f:
+        with open(output_filename, "a") as f:
             f.write(query)
 
     print(f"\nFound: {count} users")

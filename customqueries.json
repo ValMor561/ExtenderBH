@@ -50,6 +50,16 @@
                 }
             ]
         },
+        {
+            "name": "List all users which admin to computer",
+            "category" : "Extended_bh",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH p=(n)-[b:AdminTo]->(c:Computer) RETURN p"
+                }
+            ]
+        },
 		{
             "name": "Find all user with PasswordMustBeChange",
             "category" : "Extended_bh",
