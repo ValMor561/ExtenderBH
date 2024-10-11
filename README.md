@@ -13,6 +13,11 @@ locate customquery.json
 ```
 C:\Users\<User>\AppData\Roaming\bloodhound
 ```
+# Выполнение .cypher файлов
+```
+type <path/file.cipher> | cypher-shell.bat -u <user> -p <pass>
+```
+![](img/query_from_file.PNG)
 # Sessions
 Добавляет связи HasSession основываясь на файле сессий и json файле машинных учетных записей TrustMetter
 ## Параметры

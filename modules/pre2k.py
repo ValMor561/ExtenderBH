@@ -24,7 +24,7 @@ def pre2k(args):
     if args.output:
         output_filename = args.output
     else:
-        output_filename = f'pre2k_extended_bh_{time.strftime("%d_%m_%H_%M")}.txt'
+        output_filename = f'pre2k_extended_bh_{time.strftime("%d_%m_%H_%M")}.cypher'
 
     if os.path.exists(output_filename):
             filename, file_extension = os.path.splitext(output_filename)

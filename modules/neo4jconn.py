@@ -16,9 +16,9 @@ class neo4j_db:
             print("[!] Chech neo4j auth data\n")
             return False
         except (DriverError, Neo4jError) as exception:
-            print("[!]" + exception)
+            print("[!]" + str(exception))
             return False
         except Exception as exception:
-            print("[!]" + exception)
+            print("[!]" + str(exception))
             return False
             

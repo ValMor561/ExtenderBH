@@ -7,7 +7,7 @@ from modules.brute import brute
 from modules.localadmin import localadmin
 from modules.pre2k import pre2k
 from modules.ip import ip
-
+from modules.exportquery import exportquery
 def arg_parse():
     parser = argparse.ArgumentParser(description='Application for upload data into BloodHound')
     subparser = parser.add_subparsers(title='subcommands', help='additional help')
@@ -70,6 +70,21 @@ def arg_parse():
     ip_parser.add_argument('-o','--output', help="Output filename")
    
     ip_parser.set_defaults(func=ip)
+    #__End ip part__
+
+    #__Start exportquery part__
+    exportquery_parser = subparser.add_parser('exportquery', help="Execute query from cypherfile")
+    exportquery_parser.add_argument('-i','--input', help="Cypher filename", required=True)
+    exportquery_parser.add_argument('-c','--count', help="Count query for request", default=25)
+
+    exportquery_parser.set_defaults(func=exportquery)
+    
+    neo4j_goup = exportquery_parser.add_argument_group('neo4j')
+    neo4j_goup.add_argument('-na', '--neo4j_auth', help="Auto use neo4j request for result", action='store_true', required=True)
+    neo4j_goup.add_argument('-nl', '--neo4j_login', help="Login for neo4j")
+    neo4j_goup.add_argument('-np', '--neo4j_password', help="Password for neo4j")
+    neo4j_goup.add_argument('-nu', '--neo4j_url', help='URL for neo4j. By default - neo4j://localhost:7687', default="neo4j://localhost:7687")
+    neo4j_goup.add_argument('-nd', '--neo4j_database', help='Database for neo4j. By default - neo4j', default="neo4j")
     #__End ip part__
 
     #__Start neo4j part__
