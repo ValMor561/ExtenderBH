@@ -24,20 +24,19 @@ def spray(args):
     if args.output:
         output_filename = args.output
     else:
-        output_filename = f'extended_spray_bh_{time.strftime("%d_%m_%H_%M")}.txt'
+        output_filename = f'spray_extended_bh_{time.strftime("%d_%m_%H_%M")}.txt'
 
     if os.path.exists(output_filename):
         filename, file_extension = os.path.splitext(output_filename)
         output_filename = filename + "_tmp" + file_extension
 
-    user_res = []
+    user_res = {}
     passw_res = []
     user_change = []
     not_error = True
     count = 0
-    print(f'{"-"*20}Start{"-"*20}\n')
     for line in data:
-        match_plus = re.search(r"([^\s]*)\s*\[\+\]\s([^\\]*)\\([^:]*):([^\s]*)\s?(\(Zh@hnut\))?(Pwn3d!)?", line)
+        match_plus = re.search(r"([^\s]*)\s*\[\+\]\s([^\\]*)\\([^:]*):([^\s]*)\s?(\(Zh@hnut\))?(\(Pwn3d!\))?", line)
         if match_plus:
             target = match_plus[1]
             domain = match_plus[2]
@@ -47,13 +46,17 @@ def spray(args):
             pwned = match_plus[6]
             localadmin = ""
 
-            if user in user_res:
-                continue
-            user_res.append(user)
-
+            if user in user_res.keys():
+                if target in user_res[user]:
+                    continue
+                else:
+                    user_res[user].append(target)
+            else:
+                user_res[user] = [target]
+            
             if zhahnut or pwned:
                 localadmin = "SET u.LocalAdmin = True"
-                print(f"[+] Valid localadmin: {user}:{passw}")
+                print(f"[+] Valid localadmin: {user}:{passw} on target {target}")
                 if target:
                     query = f'MATCH (u:User) WHERE u.name =~ "(?i){user}.*" MATCH (c: Computer) WHERE c.name =~ "(?i){target}.*" MERGE (u)-[r: AdminTo]->(c);\n'
                     if args.neo4j_auth and not_error:
@@ -62,7 +65,7 @@ def spray(args):
                     with open(output_filename, "a") as f:
                         f.write(query)
             else:
-                print(f"[+] Valid user: {user}:{passw}")
+                print(f"[+] Valid user: {user}:{passw} on target {target}")
 
             if args.nt_hash:
                 query = f'MATCH (u:User) WHERE u.name =~ "(?i){user}.*" SET u.owned = True {localadmin};\n'

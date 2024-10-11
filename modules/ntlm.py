@@ -16,7 +16,7 @@ def ntlm(args):
     if args.output:
         output_filename = args.output
     else:
-        output_filename = f'extended_ntlm_bh_{time.strftime("%d_%m_%H_%M")}.txt'
+        output_filename = f'ntlm_extended_bh_{time.strftime("%d_%m_%H_%M")}.txt'
 
     if os.path.exists(output_filename):
         filename, file_extension = os.path.splitext(output_filename)
@@ -25,7 +25,6 @@ def ntlm(args):
     user_list = {}
     responder_logs = args.input
     not_error = True
-    print(f'{"-"*20}Start{"-"*20}\n')
     for file in responder_logs:
         try:
             with open(file, mode="r") as f:
@@ -54,12 +53,13 @@ def ntlm(args):
             f.write(query)
         count += 1
     
-    print(f"\nFound: {count} users")
+    
 
     if args.neo4j_auth:
         if not_error:
             print("Data upload in neo4j succesfully")
         else:
             print("Couldn't upload data, you can do it manualy")
-        
+
+    print(f"\nFound: {count} hashes of users")
     print(f"Out filename: {output_filename}")

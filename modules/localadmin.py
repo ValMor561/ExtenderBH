@@ -34,7 +34,7 @@ def localadmin(args):
     if args.output:
         output_filename = args.output
     else:
-        output_filename = f'extended_localadmin_bh_{time.strftime("%d_%m_%H_%M")}.txt'
+        output_filename = f'localadmin_extended_bh_{time.strftime("%d_%m_%H_%M")}.txt'
 
     if os.path.exists(output_filename):
         filename, file_extension = os.path.splitext(output_filename)
@@ -51,8 +51,6 @@ def localadmin(args):
                 continue
             localadmin_dict[target].append(line.strip())
     
-    print(f'{"-"*20}Start{"-"*20}\n')
-
     if trust_input != "":
         try:
             if "json" in trust_input:
@@ -86,12 +84,12 @@ def localadmin(args):
             with open(output_filename, "a") as f:
                 f.write(query)
             count += 1
-    print(f"Found: {count} users")
-
+    
     if args.neo4j_auth:
         if not_error:
             print("Data upload in neo4j succesfully")
         else:
             print("Couldn't upload data, you can do it manualy")
-        
+
+    print(f"Found: {count} users")
     print(f"Out filename: {output_filename}")

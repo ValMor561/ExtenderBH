@@ -9,14 +9,16 @@ class neo4j_db:
         self.driver.close()
 
     def execute_query(self, query):
-        with self.driver.session() as session:
-            try:
-                self.driver.execute_query(query, database_=self.database)
-                return True
-            except AuthError:
-                print("[!] Chech neo4j auth data\n")
-                return False
-            except (DriverError, Neo4jError) as exception:
-                print("[!]" + exception)
-                return False
+        try:
+            self.driver.execute_query(query, database_=self.database)
+            return True
+        except AuthError:
+            print("[!] Chech neo4j auth data\n")
+            return False
+        except (DriverError, Neo4jError) as exception:
+            print("[!]" + exception)
+            return False
+        except Exception as exception:
+            print("[!]" + exception)
+            return False
             

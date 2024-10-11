@@ -6,6 +6,7 @@ from modules.ntlm import ntlm
 from modules.brute import brute
 from modules.localadmin import localadmin
 from modules.pre2k import pre2k
+from modules.ip import ip
 
 def arg_parse():
     parser = argparse.ArgumentParser(description='Application for upload data into BloodHound')
@@ -14,7 +15,7 @@ def arg_parse():
     #__Start session part__
     session_parser = subparser.add_parser('session', help="Work with sessions")
     session_parser.add_argument('-si','--session_input', help="Session filename", required=True)
-    session_parser.add_argument('-tm','--trust_metter', help="Trust metter json or csv filename", required=True)
+    session_parser.add_argument('-tm','--trust_metter', help="Trust metter json or csv filename")
     session_parser.add_argument('-o','--output', help="Output filename")
 
     session_parser.set_defaults(func=session)
@@ -63,8 +64,16 @@ def arg_parse():
     pre2k_parser.set_defaults(func=pre2k)
     #__End pre2k part__
 
+    #__Start ip part__
+    ip_parser = subparser.add_parser('ip', help="Parse trust metter output and add ip field to muz")
+    ip_parser.add_argument('-tm','--trust_metter', help="Trust metter json or csv filename", required=True)
+    ip_parser.add_argument('-o','--output', help="Output filename")
+   
+    ip_parser.set_defaults(func=ip)
+    #__End ip part__
+
     #__Start neo4j part__
-    modules = [session_parser, spray_parser, ntlm_parser, brute_parser, localadmin_parser , pre2k_parser]
+    modules = [session_parser, spray_parser, ntlm_parser, brute_parser, localadmin_parser , pre2k_parser, ip_parser]
     for module in modules:
         neo4j_goup = module.add_argument_group('neo4j')
         neo4j_goup.add_argument('-na', '--neo4j_auth', help="Auto use neo4j request for result", action='store_true' )
@@ -77,8 +86,17 @@ def arg_parse():
     args = parser.parse_args(sys.argv[1:])
     args.func(args)
 
+def print_logo():
+    print("""
+   ____     __              __          ___  __ __
+  / __/_ __/ /____ ___  ___/ /__ ____  / _ )/ // /
+ / _/ \ \ / __/ -_) _ \/ _  / -_) __/ / _  / _  / 
+/___//_\_\\\\__/\__/_//_/\_,_/\__/_/   /____/_//_/  
+                                                  
+""")
 
 def main():
+    print_logo()
     arg_parse()
     
 if __name__ == "__main__":

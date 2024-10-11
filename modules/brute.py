@@ -32,7 +32,7 @@ def brute(args):
     if args.output:
         output_filename = args.output
     else:
-        output_filename = f'extended_brute_bh_{time.strftime("%d_%m_%H_%M")}.txt'
+        output_filename = f'brute_extended_bh_{time.strftime("%d_%m_%H_%M")}.txt'
 
     if os.path.exists(output_filename):
         filename, file_extension = os.path.splitext(output_filename)
@@ -40,10 +40,8 @@ def brute(args):
 
     search_port = args.ports
     not_error = True
-    print(f'{"-"*20}Start{"-"*20}\n')
-
+    count = 0
     if "json" in trust_input:
-        count = 0
         for muz in data['assets'].values():
             if muz['wave'] == 'Inaccessible':
                 continue
@@ -67,10 +65,7 @@ def brute(args):
                 f.write(query)
             count += 1
 
-        print(f"\nDone: {count}")
-
     if "Assets" in trust_input:
-        count = 0
         for index, row in data.iterrows():
             if row['Wave Infected'] == 'Inaccessible':
                 continue
@@ -95,14 +90,10 @@ def brute(args):
             with open(output_filename, "a") as f:
                 f.write(query)
             count += 1
-
-        print(f"\nDone: {count}")
-
-
     if args.neo4j_auth:
         if not_error:
             print("Data upload in neo4j succesfully")
         else:
             print("Couldn't upload data, you can do it manualy")
-        
+    print(f"\n{count} computers has brutable service")
     print(f"Out filename: {output_filename}")
