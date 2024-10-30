@@ -75,7 +75,6 @@ def arg_parse():
     #__Start exportquery part__
     exportquery_parser = subparser.add_parser('exportquery', help="Execute query from cypherfile")
     exportquery_parser.add_argument('-i','--input', help="Cypher filename", required=True)
-    exportquery_parser.add_argument('-c','--count', help="Count query for request", default=25)
 
     exportquery_parser.set_defaults(func=exportquery)
     

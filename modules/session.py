@@ -32,13 +32,17 @@ def session(args):
 
     ses_uz = {}
     for line in data:
-        match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", line)
+        match = re.search(r"\[\*\]\s([^:\s]*)", line)
         if match:
-            ip = match[0]
-        matches = re.findall(r"\[([^]^\*]*)\]", line)
-        if matches:
-            for match in matches:
-                ses_uz[match] = ip
+            target = match[1]
+            matches = re.findall(r"\[([^]^\*]*)\]", line)
+            if matches:
+                for match in matches:
+                    if match not in ses_uz.keys(): 
+                        ses_uz[match] = [target]
+                    else:
+                        ses_uz[match].append(target)
+
     if len(ses_uz) == 0:
         print("[!] Make sure that your session file has format <ip> : [UZ]")
     
@@ -68,51 +72,71 @@ def session(args):
                 data = pd.read_excel(trust_input)
         except FileNotFoundError:
             print("[!] Check the trust metter filename")
-            return  
+            return 
         if "json" in trust_input:
-            for uz, ip in ses_uz.items():
-                for muz in data['assets'].values():
-                    if ip in muz['ip_address']:
-                        muz_n = muz['fqdn']
-                        
-                        query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (n)-[r:HasSession]->(m);\n'
-                        
-                        if args.neo4j_auth and not_error:
-                            not_error = NJ.execute_query(query)
-                        
-                        with open(output_filename, "a") as f:
-                            f.write(query)
-                        print(f'[+] {uz} -> {muz_n}')
-                        count += 1
-                        continue
+            for uz, targets in ses_uz.items():
+                for target in targets:
+                    muz_n = ""
+                    match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
+                    if match:
+                        for muz in data['assets'].values():
+                            if target in muz['ip_address']:
+                                muz_n = muz['fqdn']
+                                break
+                    else:
+                        muz_n = target
+                    if muz_n == "":
+                        continue     
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (n)-[r:HasSession]->(m);\n'
+                    
+                    if args.neo4j_auth and not_error:
+                        not_error = NJ.execute_query(query)
+                    
+                    with open(output_filename, "a") as f:
+                        f.write(query)
+                    print(f'[+] {muz_n} -> {uz}')
+                    count += 1
 
         elif "Assets" in trust_input:
-            for uz, ip in ses_uz.items():
-                for index, row in data.iterrows():
-                    ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
-                    if ip in ip_addr:
-                        muz_n = row['FQDN']
-
-                        query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (m)-[r:HasSession]->(n);\n'
-                        
-                        if args.neo4j_auth and not_error:
-                            not_error = NJ.execute_query(query)
-                        
-                        with open(output_filename, "a") as f:
-                            f.write(query)
-                        print(f'[+] {uz} -> {muz_n}')
-                        count += 1
+            for uz, targets in ses_uz.items():
+                for target in targets:
+                    muz_n = ""
+                    match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
+                    if match:
+                        for index, row in data.iterrows():
+                            ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
+                            if target in ip_addr:
+                                muz_n = row['FQDN']
+                                break
+                    else:
+                        muz_n = target
+                    if muz_n == "":
                         continue
-    else:
-        for uz, ip in ses_uz.items():
-            query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE "{ip}" in m.IP MERGE (m)-[r:HasSession]->(n);\n'
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){muz_n}.*" MERGE (m)-[r:HasSession]->(n);\n'
                     
-            if args.neo4j_auth and not_error:
-                not_error = NJ.execute_query(query)
-            
-            with open(output_filename, "a") as f:
-                f.write(query)
-            print(f'[+] {uz} -> {ip}')
+                    if args.neo4j_auth and not_error:
+                        not_error = NJ.execute_query(query)
+                    
+                    with open(output_filename, "a") as f:
+                        f.write(query)
+                    print(f'[+] {muz_n} -> {uz}')
+                    count += 1
+                    
+    else:
+        for uz, targets in ses_uz.items():
+            for target in targets:
+                match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
+                if match:
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE "{target}" in m.IP MERGE (m)-[r:HasSession]->(n);\n'
+                else:
+                    query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name ~= "(?i){target}.*" MERGE (m)-[r:HasSession]->(n);\n'
+
+                if args.neo4j_auth and not_error:
+                    not_error = NJ.execute_query(query)
+                
+                with open(output_filename, "a") as f:
+                    f.write(query)
+                print(f'[+] {target} -> {uz}')
     if args.neo4j_auth:
         if not_error:
             print("Data upload in neo4j succesfully")
