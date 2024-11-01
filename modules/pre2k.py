@@ -34,7 +34,7 @@ def pre2k(args):
     not_error = True
     count = 0
     for line in data:
-        match = re.search(r"VALID CREDENTIALS[^,]*, ' ([^\\]*)\\\\([^']*)', '([^']*)", line)
+        match = re.search(r"VALID CREDENTIALS:\s([^\\]*)\\([^:]*):(\S*)", line)
         if match:
             domain = match[1]
             user = match[2]
