@@ -4,6 +4,7 @@ import json
 import time
 import pandas as pd
 from modules.neo4jconn import neo4j_db
+from progress.bar import IncrementalBar
 
 def session(args):
     if args.neo4j_auth:
@@ -53,40 +54,45 @@ def session(args):
 
     not_error = True
     count = 0
+    bar = IncrementalBar('Done', max = len(data))
     for line in data:
         match = re.search(r"\[\*\]\s([^:\s]*):?\s\[([^]^\*]*)\]", line)
         if match:
             target = match[1]
             matches = re.findall(r"\[([^]^\*]*)\]", line)
             if matches:
+                use_ip = False
+                match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
+                if match:
+                    if "json" in trust_input:
+                        for muz in tm_data['assets'].values():
+                            if target in muz['ip_address']:
+                                target = muz['fqdn']
+                                break
+                    elif "xlsx" in trust_input:
+                        for index, row in tm_data.iterrows():
+                            ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
+                            if target in ip_addr:
+                                target = row['FQDN']
+                                break
+                    else:
+                        use_ip = True
+
                 for uz in matches:
-                    use_ip = False
-                    match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
-                    if match:
-                        if "json" in trust_input:
-                            for muz in tm_data['assets'].values():
-                                if target in muz['ip_address']:
-                                    target = muz['fqdn']
-                                    break
-                        elif "xlsx" in trust_input:
-                            for index, row in tm_data.iterrows():
-                                ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
-                                if target in ip_addr:
-                                    target = row['FQDN']
-                                    break
-                        else:
-                            query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE "{target}" in m.IP MERGE (m)-[r:HasSession]->(n);\n'
-                            use_ip = True
                     if not use_ip:
-                        query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name ~= "(?i){target}.*" MERGE (m)-[r:HasSession]->(n);\n'
+                        query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE m.name =~ "(?i){target}.*" MERGE (m)-[r:HasSession]->(n);\n'
+                    else:
+                        query = f'MATCH (n:User) WHERE n.name =~ "(?i){uz}.*" MATCH (m:Computer) WHERE "{target}" in m.IP MERGE (m)-[r:HasSession]->(n);\n'
                     
                     if args.neo4j_auth and not_error:
                         not_error = NJ.execute_query(query)
                     
                     with open(output_filename, "a") as f:
                         f.write(query)
-                    print(f'[+] {target} -> {uz}')
+                    #print(f'[+] {target} -> {uz}')
                     count += 1
+            bar.next()
+                
                     
     print(f"Added {count} sessions")
     print(f"Out filename: {output_filename}")
