@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from modules.neo4jconn import neo4j_db
 
-def brute(args):
+def ports(args):
     if args.neo4j_auth:
         if not args.neo4j_login:
             print("[!] neo4j auth mode required --neo4j_login or -nl flag")
@@ -55,8 +55,8 @@ def brute(args):
                 continue
 
             found_port_str = ', '.join(found_port)
-            print(f"[+] For {muz['fqdn']} found {len(found_port)} brutable service on {found_port_str}")
-            query = f'MATCH (c:Computer) WHERE c.name =~ "(?i){muz["fqdn"]}.*" SET c.BrutableService = {found_port};\n'
+            print(f"[+] For {muz['fqdn']} add {len(found_port)} ports: {found_port_str}")
+            query = f'MATCH (c:Computer) WHERE c.name =~ "(?i){muz["fqdn"]}.*" SET c.Ports = {found_port};\n'
 
             if args.neo4j_auth and not_error:
                     not_error = NJ.execute_query(query)
@@ -81,8 +81,8 @@ def brute(args):
                 continue
 
             found_port_str = ', '.join(found_port)
-            print(f"[+] For {row['FQDN']} found {len(found_port)} brutable service on {found_port_str}")
-            query = f'MATCH (c:Computer) WHERE c.name =~ "(?i){row["FQDN"]}.*" SET c.BrutableService = {found_port};\n'
+            print(f"[+] For {row['FQDN']} add {len(found_port)} ports: {found_port_str}")
+            query = f'MATCH (c:Computer) WHERE c.name =~ "(?i){row["FQDN"]}.*" SET c.Ports = {found_port};\n'
 
             if args.neo4j_auth and not_error:
                     not_error = NJ.execute_query(query)
@@ -95,5 +95,4 @@ def brute(args):
             print("Data upload in neo4j succesfully")
         else:
             print("Couldn't upload data, you can do it manualy")
-    print(f"\n{count} computers has brutable service")
     print(f"Out filename: {output_filename}")

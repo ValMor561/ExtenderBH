@@ -3,7 +3,7 @@ import sys
 from modules.session import session
 from modules.spray import spray
 from modules.ntlm import ntlm
-from modules.brute import brute
+from modules.ports import ports
 from modules.localadmin import localadmin
 from modules.pre2k import pre2k
 from modules.ip import ip
@@ -47,14 +47,14 @@ def arg_parse():
     ntlm_parser.set_defaults(func=ntlm)
     #__End ntlm part__
 
-    #__Start brute part__
-    brute_parser = subparser.add_parser('brute', help="Find brutable service from Trust meter report")
-    brute_parser.add_argument('-tm','--trust_meter', help="Trust meter json or csv filename", required=True)
-    brute_parser.add_argument('-o','--output', help="Output filename")
-    brute_parser.add_argument('-p','--ports', help="Searching for ports. By default: 21, 22, 23, 1433, 3306, 5432, 5900", default=['21', '22', '23', '1433', '3306', '5432', '5900'], nargs='+')
+    #__Start ports part__
+    ports_parser = subparser.add_parser('ports', help="Find brutable service from Trust meter report")
+    ports_parser.add_argument('-tm','--trust_meter', help="Trust meter json or csv filename", required=True)
+    ports_parser.add_argument('-o','--output', help="Output filename")
+    ports_parser.add_argument('-p','--ports', help="Searching for ports. By default: 21, 22, 23, 1433, 3306, 5432, 5900", default=['21', '22', '23', '1433', '3306', '5432', '5900'], nargs='+')
 
-    brute_parser.set_defaults(func=brute)
-    #__End brute part__
+    ports_parser.set_defaults(func=ports)
+    #__End ports part__
 
     #__Start localadmin part__
     localadmin_parser = subparser.add_parser('localadmin', help="Add localadmin property from net rpc command"  )
@@ -82,7 +82,7 @@ def arg_parse():
     #__End ip part__
 
     #__Start exportquery part__
-    exportquery_parser = subparser.add_parser('exportquery', help="Execute query from cypherfile")
+    exportquery_parser = subparser.add_parser('exportquery', help="Execute query from cypher file")
     exportquery_parser.add_argument('-i','--input', help="Cypher filename", required=True)
     exportquery_parser.add_argument('-t','--threads', help="Count of threads", default=8)
 
@@ -91,7 +91,7 @@ def arg_parse():
     #__End exportquery part__
 
     #__Start neo4j part__
-    modules = [session_parser, spray_parser, ntlm_parser, brute_parser, localadmin_parser , pre2k_parser, ip_parser, vuln_parser, exportquery_parser]
+    modules = [session_parser, spray_parser, ntlm_parser, ports_parser, localadmin_parser , pre2k_parser, ip_parser, vuln_parser, exportquery_parser]
     for module in modules:
         neo4j_goup = module.add_argument_group('neo4j')
         neo4j_goup.add_argument('-na', '--neo4j_auth', help="Auto use neo4j request for result", action='store_true' )
