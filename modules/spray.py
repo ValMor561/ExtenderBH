@@ -77,7 +77,7 @@ def spray(args):
             if args.neo4j_auth and not_error:
                 not_error = NJ.execute_query(query)
             
-            with open(output_filename, "a+") as f:
+            with open(output_filename, "a") as f:
                 f.write(query)
             count += 1
 
@@ -104,8 +104,6 @@ def spray(args):
             with open(output_filename, "a+") as f:
                 f.write(query)
             count += 1
-        
-
 
     for passw in passw_res:
         query = f'MATCH (n:User) WHERE n.ClearTextPassword = "{passw}" MATCH (m:User) WHERE m.ClearTextPassword = "{passw}" FOREACH (_ IN CASE WHEN n <> m THEN [1] END | MERGE (n)-[r:SharePasswordWith]->(m));\n'

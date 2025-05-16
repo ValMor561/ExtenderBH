@@ -17,10 +17,10 @@ def session(args):
         NJ = neo4j_db(args.neo4j_url, args.neo4j_login, args.neo4j_password, args.neo4j_database)
 
     session_input = args.session_input
-    if args.trust_metter:
-        trust_input = args.trust_metter
+    if args.trust_meter:
+        trust_input = args.trust_meter
         if not ("json" in trust_input or "Assets" in trust_input):
-            print("[!] Trust Metter must be json or *Assets.xlsx")
+            print("[!] Trust meter must be json or *Assets.xlsx")
             return
         
         try:
@@ -30,7 +30,7 @@ def session(args):
             elif "Assets" in trust_input:
                 tm_data = pd.read_excel(trust_input)
         except FileNotFoundError:
-            print("[!] Check the trust metter filename")
+            print("[!] Check the trust meter filename")
             return   
     else:
         trust_input = ""
@@ -89,10 +89,8 @@ def session(args):
                     
                     with open(output_filename, "a") as f:
                         f.write(query)
-                    #print(f'[+] {target} -> {uz}')
                     count += 1
-            bar.next()
-                
-                    
+        bar.next()
+                       
     print(f"Added {count} sessions")
     print(f"Out filename: {output_filename}")

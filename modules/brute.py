@@ -14,9 +14,9 @@ def brute(args):
             return
         NJ = neo4j_db(args.neo4j_url, args.neo4j_login, args.neo4j_password, args.neo4j_database)
 
-    trust_input = args.trust_metter
+    trust_input = args.trust_meter
     if not ("json" in trust_input or "Assets" in trust_input):
-        print("[!] Trust Metter must be json or *Assets.xlsx")
+        print("[!] Trust meter must be json or *Assets.xlsx")
         return
     
     try:
@@ -26,7 +26,7 @@ def brute(args):
         elif "Assets" in trust_input:
             data = pd.read_excel(trust_input) 
     except FileNotFoundError:
-        print("[!] Check the trust metter filename")
+        print("[!] Check the trust meter filename")
         return
 
     if args.output:

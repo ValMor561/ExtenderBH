@@ -2,7 +2,7 @@
     "queries": [
         {
             "name": "Find all Hass Session relationships",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -12,7 +12,7 @@
         },
         {
             "name": "Find all owned",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -22,7 +22,7 @@
         },
         {
             "name": "Find all user with ClearTextPassword",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -32,7 +32,7 @@
         },
         {
             "name": "Find all computers with ClearTextPassword",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -42,7 +42,7 @@
         },
 		{
             "name": "List all localadmin",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -52,7 +52,7 @@
         },
         {
             "name": "List all users which admin to computer",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -62,7 +62,7 @@
         },
 		{
             "name": "Find all user with PasswordMustBeChange",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -72,7 +72,7 @@
         },
         {
             "name": "Find all user with SharedPassword",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -82,7 +82,7 @@
         },
 		{
             "name": "All object which NTLMv2 we have",
-            "category" : "Extended_bh",
+            "category" : "Extender_BH",
             "queryList": [
                 {
                     "final": true,
@@ -92,7 +92,27 @@
         },
         {
             "name": "Find brutable service",
-			"category": "Extended_bh",
+			"category": "Extender_BH",
+			"queryList": [
+				{
+                    "final": true,
+                    "query": "MATCH (n) WHERE n.BrutableService  return n;"
+                }				
+			]
+        },
+        {
+            "name": "Find computers where WebDav service enabled",
+			"category": "Extender_BH",
+			"queryList": [
+				{
+                    "final": true,
+                    "query": "MATCH (c:Computer) WHERE 'WebDav' IN c.Vuln RETURN c"
+                }				
+			]
+        },
+        {
+            "name": "Find computers vulnerable for PrintNightmare",
+			"category": "Extender_BH",
 			"queryList": [
 				{
                     "final": true,

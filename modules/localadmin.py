@@ -18,10 +18,10 @@ def localadmin(args):
     not_error = True
     input = args.input
     trust_input = ""
-    if args.trust_metter:
-        trust_input = args.trust_metter
+    if args.trust_meter:
+        trust_input = args.trust_meter
         if not ("json" in trust_input or "Assets" in trust_input):
-            print("[!] Trust Metter must be json or *Assets.xlsx")
+            print("[!] Trust meter must be json or *Assets.xlsx")
             return
         
     try:
@@ -59,7 +59,7 @@ def localadmin(args):
             elif "Assets" in trust_input:
                 data = pd.read_excel(trust_input)
         except FileNotFoundError:
-            print("[!] Check the trust metter filename")
+            print("[!] Check the trust meter filename")
             return
     count = 0
     for target in localadmin_dict:      
@@ -69,15 +69,18 @@ def localadmin(args):
                 if "json" in trust_input:
                     for muz in data['assets'].values():
                         if target in muz['ip_address']:
-                            target = muz['fqdn']
+                            target_fqdn = muz['fqdn']
                 elif "Assets" in trust_input:
                     for index, row in data.iterrows():
                         ip_addr = row['IP Address'][2:-2].replace('\'', '').split(', ')
                         if target in ip_addr:
-                            target = row['FQDN']
+                            target_fqdn = row['FQDN']
         for admin in localadmin_dict[target]:
-            domain, username = admin.split("\\")
-            query = f'MATCH (u) WHERE u.name =~ "(?i){username}@{domain}.*" MATCH (c: Computer) WHERE c.name =~ "(?i){target}.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;\n'
+            try:
+                domain, username = admin.split("\\")
+            except:
+                continue
+            query = f'MATCH (u) WHERE u.name =~ "(?i){username}@{domain}.*" MATCH (c: Computer) WHERE c.name =~ "(?i){target_fqdn}.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;\n'
             if args.neo4j_auth and not_error:
                 not_error = NJ.execute_query(query)
                     
