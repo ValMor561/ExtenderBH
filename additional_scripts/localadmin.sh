@@ -55,7 +55,7 @@ while read -r line; do
     echo
     
     # Save results to output file
-    echo "[+] Results for $line" >> "$output_file"
+    echo "[+] $line" >> "$output_file"
     echo "$result" >> "$output_file"
     echo >> "$output_file"
     

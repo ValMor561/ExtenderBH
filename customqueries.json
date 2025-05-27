@@ -11,6 +11,16 @@
             ]
         },
         {
+            "name": "Delete all Hass Session relationships",
+            "category" : "Extender_BH",
+            "queryList": [
+                {
+                    "final": true,
+                    "query": "MATCH ()-[r:HasSession]-() DELETE r"
+                }
+            ]
+        },
+        {
             "name": "Find all owned",
             "category" : "Extender_BH",
             "queryList": [
