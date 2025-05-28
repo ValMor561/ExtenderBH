@@ -43,7 +43,7 @@
                             },
                             {
                                 "final": true,
-                                "query": "MATCH (n:User),(m:Group {name:$result}),p=allshortestPaths((n {owned:true})-[r:MemberOf|AdminTo|HasSession|Contains|GpLink|Owns|DCSync|AllExtendedRights|ForceChangePassword|GenericAll|GenericWrite|WriteDacl|WriteOwner*1..]->(m)) RETURN p",
+                                "query": "MATCH (n),(m:Group {name:$result}),p=allshortestPaths((n {owned:true})-[r:MemberOf|AdminTo|HasSession|Contains|GpLink|Owns|DCSync|AllExtendedRights|ForceChangePassword|GenericAll|GenericWrite|WriteDacl|WriteOwner*1..]->(m)) RETURN p",
                                 "allowCollapse": true,
                                 "endNode": "{}"
                             }
