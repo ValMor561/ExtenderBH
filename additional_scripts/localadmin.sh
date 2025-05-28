@@ -59,6 +59,17 @@ while read -r line; do
     echo "$result" >> "$output_file"
     echo >> "$output_file"
     
+     # Execute net rpc command and capture output
+    result=$(net rpc group members "Администраторы" -U "$domain"/"$username"%"$password" -I "$line" 2>&1)
+    
+    echo "$result"
+    echo
+    
+    # Save results to output file
+    echo "[+] $line" >> "$output_file"
+    echo "$result" >> "$output_file"
+    echo >> "$output_file"
+    
 done < "$input_file"
 
 echo "Scan completed. Results saved to $output_file"
