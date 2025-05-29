@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import time
 import os
+from progress.bar import IncrementalBar
 
 def localadmin(args):
     if args.neo4j_auth:
@@ -62,6 +63,7 @@ def localadmin(args):
             print("[!] Check the trust meter filename")
             return
     count = 0
+    bar = IncrementalBar('Done', max = len(localadmin_dict))
     for target in localadmin_dict:      
         match = re.search(r"([0-9]{1,3}[\.]){3}[0-9]{1,3}", target)
         if match:
@@ -83,16 +85,16 @@ def localadmin(args):
             query = f'MATCH (u) WHERE u.name =~ "(?i){username}@{domain}.*" MATCH (c: Computer) WHERE c.name =~ "(?i){target_fqdn}.*" MERGE (u)-[r: AdminTo]->(c) SET u.LocalAdmin = True;\n'
             if args.neo4j_auth and not_error:
                 not_error = NJ.execute_query(query)
-                    
             with open(output_filename, "a") as f:
                 f.write(query)
             count += 1
+        bar.next()
     
     if args.neo4j_auth:
         if not_error:
-            print("Data upload in neo4j succesfully")
+            print("\nData upload in neo4j succesfully")
         else:
             print("Couldn't upload data, you can do it manualy")
 
-    print(f"Found: {count} users")
+    print(f"\nFound: {count} users")
     print(f"Out filename: {output_filename}")
