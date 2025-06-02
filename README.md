@@ -24,7 +24,7 @@ python extender_bh.py -h
 Помимо этого использует результат работы [TrustMeter](https://zeronetworks.com/platform/trustmeter), для перевода IP адресов в NetBIOS имена. Походят как результаты в формате `json`, так и в `csv`.
 Пример команды для запуска модуля:
 ```
-python .\extender_bh.py session -si .\sessions.txt -tm '.\test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh.py session -si sessions.txt -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль spray
 ![](img/spray_help.png)
@@ -65,7 +65,7 @@ python extender_bh ntlm -i responder.log -na -nl neo4j -np 1234
 Обрабатывает результат работы Trust Meter и добавляет открытые порты в атрибут `ports`. Однако для сокращения времени работы, по умолчанию проверяются не все порты а только наиболее распространённые.
 Пример команды для запуска модуля:
 ```
-python extender_bh ports -tm '.\test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh ports -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль localadmin
 ![](img/localadmin_help.png)
@@ -79,7 +79,7 @@ python extender_bh ports -tm '.\test.local Report.json' -na -nl neo4j -np 1234
 ```
 Пример команды для запуска модуля:
 ```
-python extender_bh -i localadmin.txt -tm '.\test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh localadmin -i localadmin.txt -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль pre2k
 ![](img/pre2k_help.png)
@@ -93,7 +93,7 @@ python extender_bh pre2k -i pre2k.txt -na -nl neo4j -np 1234
 Обрабатывает результат работы `Trust Meter`, добавляя атрибут IP, для всех машинных учетных записей. Таким образов, применив этот модуль вначале, отпадает необходимость в использовании флага `-tm`, для всех модулей.
 Пример команды для запуска модуля:
 ```
-python extender_bh -tm '.\test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль exportquery
 ![](img/exportquery_help.png)
