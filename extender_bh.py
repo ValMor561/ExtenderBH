@@ -15,7 +15,7 @@ def arg_parse():
     
     #__Start session part__
     session_parser = subparser.add_parser('session', help="Work with sessions")
-    session_parser.add_argument('-si','--session_input', help="Session filename", required=True)
+    session_parser.add_argument('-i','--input', help="Session filename", required=True)
     session_parser.add_argument('-tm','--trust_meter', help="Trust meter json or csv filename")
     session_parser.add_argument('-o','--output', help="Output filename")
 

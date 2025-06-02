@@ -16,7 +16,7 @@ def session(args):
             return
         NJ = neo4j_db(args.neo4j_url, args.neo4j_login, args.neo4j_password, args.neo4j_database)
 
-    session_input = args.session_input
+    session_input = args.input
     if args.trust_meter:
         trust_input = args.trust_meter
         if not ("json" in trust_input or "Assets" in trust_input):
