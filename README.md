@@ -58,14 +58,14 @@ python extender_bh.py vuln -i webdav.txt -na -nl neo4j -np 1234
 Обрабатывает файл логов `Responder`, с добавлением полей `NetNTLMv1` или `NetNTLMv2` и количества раз встречающихся в логах хэшей пользователей.
 Пример команды для запуска модуля:
 ```
-python extender_bh ntlm -i responder.log -na -nl neo4j -np 1234
+python extender_bh.py ntlm -i responder.log -na -nl neo4j -np 1234
 ```
 ## Модуль ports
 ![](img/ports_help.png)
 Обрабатывает результат работы Trust Meter и добавляет открытые порты в атрибут `ports`. Однако для сокращения времени работы, по умолчанию проверяются не все порты а только наиболее распространённые.
 Пример команды для запуска модуля:
 ```
-python extender_bh ports -tm 'test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh.py ports -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль localadmin
 ![](img/localadmin_help.png)
@@ -79,21 +79,21 @@ python extender_bh ports -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 Пример команды для запуска модуля:
 ```
-python extender_bh localadmin -i localadmin.txt -tm 'test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh.py localadmin -i localadmin.txt -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль pre2k
 ![](img/pre2k_help.png)
 Обрабатывает результат работы инструмента [pre2k](https://github.com/garrettfoster13/pre2k), помечая найденные учетные записи как `Owned` и устанавливая значения поля `ClearTextPassword`
 Пример команды для запуска модуля:
 ```
-python extender_bh pre2k -i pre2k.txt -na -nl neo4j -np 1234
+python extender_bh.py pre2k -i pre2k.txt -na -nl neo4j -np 1234
 ```
 ## Модуль ip
 ![](img/ip_help.png)
 Обрабатывает результат работы `Trust Meter`, добавляя атрибут IP, для всех машинных учетных записей. Таким образов, применив этот модуль вначале, отпадает необходимость в использовании флага `-tm`, для всех модулей.
 Пример команды для запуска модуля:
 ```
-python extender_bh -tm 'test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh.py -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль exportquery
 ![](img/exportquery_help.png)
