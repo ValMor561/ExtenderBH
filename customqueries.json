@@ -155,7 +155,7 @@
 			"queryList": [
 				{
                     "final": true,
-                    "query": "MATCH (n) WHERE n.BrutableService  return n;"
+                    "query": "MATCH (c:Computer) WHERE 'PrintNightmare' IN c.Vuln RETURN c"
                 }				
 			]
         }
