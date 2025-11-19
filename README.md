@@ -93,7 +93,7 @@ python extender_bh.py pre2k -i pre2k.txt -na -nl neo4j -np 1234
 Обрабатывает результат работы `Trust Meter`, добавляя атрибут IP, для всех машинных учетных записей. Таким образов, применив этот модуль вначале, отпадает необходимость в использовании флага `-tm`, для всех модулей.
 Пример команды для запуска модуля:
 ```
-python extender_bh.py -tm 'test.local Report.json' -na -nl neo4j -np 1234
+python extender_bh.py ip -tm 'test.local Report.json' -na -nl neo4j -np 1234
 ```
 ## Модуль exportquery
 ![](img/exportquery_help.png)
